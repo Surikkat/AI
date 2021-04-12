@@ -8,6 +8,7 @@
 #include <QColor>
 #include <cmath>
 #include <QRect>
+#include <QVector2D>
 
 namespace Ui { class MainWindow; }
 
@@ -35,15 +36,15 @@ private:
     int width;//Ширина изображения
     int height;//Высота изображения
 
-    QRandomGenerator generator;//Генератор случайных чисел
-    QRandomGenerator randomWidth;//Случайная ширина(в каком-то диапазоне)
-    QRandomGenerator randomHeight;//Случайная высота(в каком-то диапазоне)
-    QRandomGenerator randomColor;//Случайный цвет(в каком-то диапазоне)
+    mutable QRandomGenerator generator;//Генератор случайных чисел
+    mutable QRandomGenerator randomWidth;//Случайная ширина(в каком-то диапазоне)
+    mutable QRandomGenerator randomHeight;//Случайная высота(в каком-то диапазоне)
+    mutable QRandomGenerator randomColor;//Случайный цвет(в каком-то диапазоне)
 
     void draw();//Функция рисования
     bool isBetter(const QRect& rect,const QColor color)const;//Получилось лучше?
     double similatingPix(const QColor& a,const QColor& b)const;//Насколько похожи пиксели
-    QRect createRandomRectangle()const;//Создать случайный прямоугольник
+    QRect createRandomRectangle() const;//Создать случайный прямоугольник
 };
 
 #endif // MAINWINDOW_H
