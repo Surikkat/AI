@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1134</width>
-    <height>600</height>
+    <width>433</width>
+    <height>158</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,30 +27,17 @@
      <string>Загрузка файла</string>
     </property>
    </widget>
-   <widget class="QLabel" name="OriginalIMG">
+   <widget class="QPushButton" name="start">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>40</y>
-      <width>521</width>
-      <height>501</height>
+      <x>170</x>
+      <y>10</y>
+      <width>111</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>40</y>
-      <width>531</width>
-      <height>501</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string/>
+     <string>Старт</string>
     </property>
    </widget>
   </widget>
@@ -59,7 +46,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1134</width>
+     <width>433</width>
      <height>20</height>
     </rect>
    </property>

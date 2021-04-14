@@ -16,15 +16,10 @@ MainWindow::~MainWindow()
 //Загрузка файла
 void MainWindow::on_LoadFile_clicked()
 {
-    fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::currentPath(), "txt-files (*.txt)");//Открываем диалоговое окно для загрузки файла
+    fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::currentPath(), "jpg-files (*.jpg)");//Открываем диалоговое окно для загрузки файла
     original.load(fileName);//Создаём изображение
     width = original.width();
     height = original.height();
-    randomWidth.bounded(0,width);
-    randomHeight.bounded(0,height);
-    randomColor.bounded(0,255);
-    QPixmap pix = QPixmap::fromImage(original);//Создаём растровое изображение
-    ui->OriginalIMG->setPixmap(pix);//Помещаем растровое изображение на левый лейбл
 }
 
 //Проверка, насколько похожи два пикселя
@@ -38,6 +33,7 @@ double MainWindow::similatingPix(const QColor& a,const QColor& b) const
     simPixels += abs(a.blue()-b.blue());//Голубой
     simPixels += abs(a.alpha()-b.alpha());//Прозрачность
 
+
     return 1 - (simPixels/(255*4.0f));//Возвращаем нормализованное значение
 }
 
@@ -47,7 +43,7 @@ bool MainWindow::isBetter(const QRect& rect, const QColor color) const
     double currentSim = 0;//Текущая схожеть
     double updateSim = 0;//Схожесть после обновления
 
-    //Просматриваем прямоуггольник
+    //Просматриваем прямоугольник
     for(int y = rect.top();y != rect.top()+rect.height();y++){
         for(int x=rect.left();x!=rect.left()+rect.width();x++){
             currentSim += similatingPix(original.pixelColor(x,y), result.pixelColor(x,y));//Проверяем насколько похожи пиксели внутри этого прямоугольника до изменения
@@ -62,22 +58,21 @@ bool MainWindow::isBetter(const QRect& rect, const QColor color) const
     return (updateSim>currentSim);//1 - лучше, 0 - хуже
 }
 
-//Создаём случччайный прямоугольник
+//Создаём случайный прямоугольник
 QRect MainWindow::createRandomRectangle() const{
-    QVector<int> topLeft(randomWidth.generate(),randomHeight.generate());//Координаты верхнего левого края
-    QVector<int> bottomRight(randomWidth.generate(),randomHeight.generate());//Координаты правого нижнего края
 
-    //Если верхний левый угол праве нижнего правого, то меняю их местами
-    if(topLeft[0]>bottomRight[0]){
-        std::swap(topLeft[0],bottomRight[0]);
-    }
+    QPoint topLeft(randomWidth(generator),randomHeight(generator));//Координаты верхнего левого края
+    QPoint bottomRight(randomWidth(generator),randomHeight(generator));//Координаты правого нижнего края
 
-    //Если верхний левый угол
-    if(topLeft[1]>bottomRight[1]){
-        std::swap(topLeft[1],bottomRight[1]);
-    }
+    //if (topLeft[0] > bottomRight[0]){
+        //std::swap(topLeft[0], bottomRight[0]);
+    //}
 
-    QRect rect{topLeft[0],topLeft[1],bottomRight[0]-topLeft[0],bottomRight[1]-topLeft[1]};
+    //if (topLeft[1] > bottomRight[1]){
+        //std::swap(topLeft[1], bottomRight[1]);
+    //}
+
+    QRect rect{topLeft.x(),topLeft.y(),abs(bottomRight.x()-topLeft.x()),abs(bottomRight.y()-topLeft.y())};
 
     if(rect.width()*rect.height()==0){
         return createRandomRectangle();
@@ -87,14 +82,14 @@ QRect MainWindow::createRandomRectangle() const{
 }
 
 void MainWindow::step(){
-    QRect rect = createRandomRectangle();
+    auto rect = createRandomRectangle();
 
-    QColor color(randomColor.generate(),randomColor.generate(),randomColor.generate());
+    QColor color(randomColor(generator),randomColor(generator),randomColor(generator));
 
     if(isBetter(rect,color)){
         for(int y = rect.top();y!=rect.top()+rect.height();y++){
             for(int x = rect.left(); x!=rect.left()+rect.width();x++){
-                result.setPixel(x,y,color);
+                result.setPixelColor(x,y,color);
             }
         }
     }
@@ -110,4 +105,19 @@ int MainWindow::getHeight() const{
     return height;
 }
 
+void MainWindow::draw(){
+}
 
+void MainWindow::on_start_clicked()
+{
+    randomWidth = std::uniform_int_distribution<int>(0, width);
+    randomHeight = std::uniform_int_distribution<int>(0, height);
+    randomColor = std::uniform_int_distribution<int>(0, 255);
+    fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::currentPath(), "jpg-files (*.jpg)");//Открываем диалоговое окно для загрузки файла
+    result.load(fileName);//Создаём изображение
+    for(int i=0;i<20;i++){
+    step();
+    result.save(fileName,"JPG",-1);
+    }
+    //draw();
+}

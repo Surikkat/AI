@@ -10,6 +10,7 @@
 #include <QRect>
 #include <QVector2D>
 
+
 namespace Ui { class MainWindow; }
 
 
@@ -28,6 +29,8 @@ public:
 private slots:
     void on_LoadFile_clicked();//Загрузка изображения
 
+    void on_start_clicked();
+
 private:
     Ui::MainWindow *ui;
     QString fileName;//Имя файла с изображением
@@ -36,10 +39,11 @@ private:
     int width;//Ширина изображения
     int height;//Высота изображения
 
-    mutable QRandomGenerator generator;//Генератор случайных чисел
-    mutable QRandomGenerator randomWidth;//Случайная ширина(в каком-то диапазоне)
-    mutable QRandomGenerator randomHeight;//Случайная высота(в каком-то диапазоне)
-    mutable QRandomGenerator randomColor;//Случайный цвет(в каком-то диапазоне)
+
+    mutable std::mt19937 generator;//Генератор случайных чисел
+    mutable std::uniform_int_distribution<int> randomWidth;//Случайная ширина(в каком-то диапазоне)
+    mutable std::uniform_int_distribution<int> randomHeight;//Случайная высота(в каком-то диапазоне)
+    std::uniform_int_distribution<int> randomColor;//Случайный цвет(в каком-то диапазоне)
 
     void draw();//Функция рисования
     bool isBetter(const QRect& rect,const QColor color)const;//Получилось лучше?
