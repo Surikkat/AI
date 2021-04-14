@@ -46,7 +46,7 @@ private:
     std::uniform_int_distribution<int> randomColor;//Случайный цвет(в каком-то диапазоне)
 
     void draw();//Функция рисования
-    bool isBetter(const QRect& rect,const QColor color)const;//Получилось лучше?
+    bool isBetter(const QRect& rect,const QColor& color)const;//Получилось лучше?
     double similatingPix(const QColor& a,const QColor& b)const;//Насколько похожи пиксели
     QRect createRandomRectangle() const;//Создать случайный прямоугольник
 };
