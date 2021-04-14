@@ -28,7 +28,6 @@ public:
 
 private slots:
     void on_LoadFile_clicked();//Загрузка изображения
-
     void on_start_clicked();
 
 private:
@@ -38,12 +37,7 @@ private:
     QImage result;//Изображение, сгенерированное алгоритмом
     int width;//Ширина изображения
     int height;//Высота изображения
-
-
-    mutable std::mt19937 generator;//Генератор случайных чисел
-    mutable std::uniform_int_distribution<int> randomWidth;//Случайная ширина(в каком-то диапазоне)
-    mutable std::uniform_int_distribution<int> randomHeight;//Случайная высота(в каком-то диапазоне)
-    std::uniform_int_distribution<int> randomColor;//Случайный цвет(в каком-то диапазоне)
+    int quality;
 
     void draw();//Функция рисования
     bool isBetter(const QRect& rect,const QColor& color)const;//Получилось лучше?

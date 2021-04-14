@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+int getRandomNumber(int min, int max);
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -64,10 +66,10 @@ QRect MainWindow::createRandomRectangle() const{
     QVector<int> topLeft;//Координаты верхнего левого края
     QVector<int> bottomRight;//Координаты правого нижнего края
 
-    topLeft.push_back(randomWidth(generator));
-    topLeft.push_back(randomHeight(generator));
-    bottomRight.push_back(randomWidth(generator));
-    bottomRight.push_back(randomHeight(generator));
+    topLeft.push_back(getRandomNumber(0,width/quality));
+    topLeft.push_back(getRandomNumber(0,height/quality));
+    bottomRight.push_back(getRandomNumber(0,width/quality));
+    bottomRight.push_back(getRandomNumber(0,height/quality));
 
 
     if (topLeft[0] > bottomRight[0]){
@@ -90,7 +92,7 @@ QRect MainWindow::createRandomRectangle() const{
 void MainWindow::step(){
     auto rect = createRandomRectangle();
 
-    QColor color(randomColor(generator),randomColor(generator),randomColor(generator));
+    QColor color(getRandomNumber(0,255),getRandomNumber(0,255),getRandomNumber(0,255));
 
     if(isBetter(rect,color)){
         for(int y = rect.top();y!=rect.top()+rect.height();y++){
@@ -113,14 +115,20 @@ int MainWindow::getHeight() const{
 
 void MainWindow::on_start_clicked()
 {
-    randomWidth = std::uniform_int_distribution<int>(0, width/4);
-    randomHeight = std::uniform_int_distribution<int>(0, height/4);
-    randomColor = std::uniform_int_distribution<int>(0, 255);
+    srand(static_cast<unsigned int>(time(0)));
     fileName = QFileDialog::getOpenFileName(this, "Open File", QDir::currentPath(), "jpg-files (*.jpg)");//Открываем диалоговое окно для загрузки файла
     result.load(fileName);//Создаём изображение
-    for(int i=0;i<16000;i++){
-    step();
+    for(int j=1;j<=20;j++){
+        quality=j;
+        for(int i=0;i<10000;i++){
+            step();
+        }
     }
     result.save(fileName,"JPG",-1);
     QCoreApplication::quit();
+}
+
+int getRandomNumber(int min, int max){
+    static const double fraction = 1.0 / (static_cast<double>(RAND_MAX) + 1.0);
+    return static_cast<int>(rand() * fraction * (max - min + 1) + min);
 }
